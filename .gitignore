@@ -1,0 +1,6 @@
+.env
+*.log
+postgres_data/
+odoo_data/
+whatsapp_sessions/
+ssl/
