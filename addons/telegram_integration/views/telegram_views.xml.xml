@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ==================== TELEGRAM BOT CONFIGURATION ==================== -->
+    
+    <!-- Tree View for Telegram Bot -->
+    <record id="view_telegram_bot_tree" model="ir.ui.view">
+        <field name="name">telegram.bot.tree</field>
+        <field name="model">telegram.bot</field>
+        <field name="arch" type="xml">
+            <tree string="Telegram Bots" decoration-info="is_active == True" decoration-muted="is_active == False">
+                <field name="name" string="Bot Name"/>
+                <field name="bot_token" string="Bot Token" invisible="1"/>
+                <field name="is_active" widget="boolean_toggle" string="Active"/>
+                <field name="total_users" string="Users"/>
+                <field name="total_messages" string="Messages"/>
+                <field name="webhook_url" string="Webhook URL" invisible="1"/>
+                <button name="set_webhook" type="object" string="Set Webhook" 
+                        icon="fa-refresh" class="btn-secondary"
+                        attrs="{'invisible': [('is_active', '=', False)]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View for Telegram Bot -->
+    <record id="view_telegram_bot_form" model="ir.ui.view">
+        <field name="name">telegram.bot.form</field>
+        <field name="model">telegram.bot</field>
+        <field name="arch" type="xml">
+            <form string="Telegram Bot Configuration">
+                <header>
+                    <button name="set_webhook" type="object" string="Set Webhook" 
+                            class="btn-primary" icon="fa-plug"
+                            attrs="{'invisible': [('is_active', '=', False)]}"/>
+                    <button name="%(telegram.action_telegram_send_message)d" 
+                            type="action" string="Send Message" 
+                            class="btn-secondary" icon="fa-paper-plane"
+                            attrs="{'invisible': [('is_active', '=', False)]}"/>
+                    <field name="is_active" widget="boolean_button" string="Active"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Bot Name" required="1"/>
+                        </h1>
+                    </div>
+                    <group string="Bot Configuration">
+                        <group>
+                            <field name="bot_token" string="Bot Token" required="1" 
+                                   password="True" placeholder="Enter Bot Token from @BotFather"/>
+                            <field name="webhook_url" string="Webhook URL" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="total_users" string="Total Users"/>
+                            <field name="total_messages" string="Total Messages"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <!-- Commands Tab -->
+                        <page string="Commands" name="commands">
+                            <field name="command_ids" context="{'default_bot_id': active_id}">
+                                <tree string="Bot Commands" editable="bottom">
+                                    <field name="name" string="Command" required="1"/>
+                                    <field name="description" string="Description"/>
+                                    <field name="action" string="Action" required="1"/>
+                                    <field name="is_active" string="Active"/>
+                                    <field name="bot_id" invisible="1"/>
+                                </tree>
+                                <form string="Bot Command">
+                                    <group>
+                                        <group>
+                                            <field name="name" string="Command" required="1"/>
+                                            <field name="action" string="Action" required="1"/>
+                                            <field name="is_active" string="Active"/>
+                                        </group>
+                                        <group>
+                                            <field name="description" string="Description"/>
+                                        </group>
+                                    </group>
+                                    <group string="Reply Template">
+                                        <field name="reply_template" string="Template" nolabel="1"
+                                               placeholder="Enter reply template..."/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        
+                        <!-- Bot Users Tab -->
+                        <page string="Users" name="users">
+                            <field name="user_ids" context="{'default_bot_id': active_id}">
+                                <tree string="Bot Users">
+                                    <field name="telegram_user_id" string="Telegram ID"/>
+                                    <field name="partner_id" string="Customer"/>
+                                    <field name="chat_id" string="Chat ID"/>
+                                    <field name="is_blocked" string="Blocked"/>
+                                    <field name="last_interaction" string="Last Interaction"/>
+                                </tree>
+                            </field>
+                        </page>
+                        
+                        <!-- Message Log Tab -->
+                        <page string="Message Log" name="messages">
+                            <field name="message_ids" context="{'default_bot_id': active_id}">
+                                <tree string="Messages" create="0" edit="0">
+                                    <field name="create_date" string="Date"/>
+                                    <field name="chat_id" string="Chat ID"/>
+                                    <field name="message_text" string="Message"/>
+                                    <field name="direction" string="Direction"/>
+                                    <field name="state" string="Status"/>
+                                </tree>
+                            </field>
+                        </page>
+                        
+                        <!-- Statistics Tab -->
+                        <page string="Statistics" name="statistics">
+                            <group string="Bot Statistics" colspan="2">
+                                <group>
+                                    <field name="total_users"/>
+                                    <field name="total_messages"/>
+                                    <field name="active_users_today"/>
+                                    <field name="messages_today"/>
+                                </group>
+                                <group>
+                                    <field name="commands_used_today"/>
+                                    <field name="most_used_command"/>
+                                    <field name="success_rate"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+                <!-- Chat Section -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View for Telegram Bot -->
+    <record id="view_telegram_bot_search" model="ir.ui.view">
+        <field name="name">telegram.bot.search</field>
+        <field name="model">telegram.bot</field>
+        <field name="arch" type="xml">
+            <search string="Search Bots">
+                <field name="name" string="Bot Name"/>
+                <field name="bot_token"/>
+                <filter string="Active" name="active" 
+                        domain="[('is_active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" 
+                        domain="[('is_active', '=', False)]"/>
+                <separator/>
+                <filter string="With Users" name="has_users" 
+                        domain="[('total_users', '>', 0)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_status" 
+                            context="{'group_by': 'is_active'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Telegram Bot -->
+    <record id="action_telegram_bot" model="ir.actions.act_window">
+        <field name="name">Telegram Bots</field>
+        <field name="res_model">telegram.bot</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_telegram_bot_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure your Telegram Bot
+            </p>
+            <p>
+                Create a bot via @BotFather on Telegram and enter the token here.
+            </p>
+        </field>
+    </record>
+
+    <!-- ==================== TELEGRAM BOT USERS ==================== -->
+    
+    <!-- Tree View for Bot Users -->
+    <record id="view_telegram_bot_user_tree" model="ir.ui.view">
+        <field name="name">telegram.bot.user.tree</field>
+        <field name="model">telegram.bot.user</field>
+        <field name="arch" type="xml">
+            <tree string="Bot Users" decoration-warning="is_blocked == True">
+                <field name="telegram_user_id" string="Telegram ID"/>
+                <field name="first_name" string="First Name"/>
+                <field name="last_name" string="Last Name"/>
+                <field name="username" string="Username"/>
+                <field name="partner_id" string="Customer"/>
+                <field name="chat_id" string="Chat ID"/>
+                <field name="is_blocked" widget="boolean_toggle" string="Blocked"/>
+                <field name="is_admin" string="Admin"/>
+                <field name="last_interaction" string="Last Interaction"/>
+                <field name="total_messages" string="Total Messages"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View for Bot Users -->
+    <record id="view_telegram_bot_user_form" model="ir.ui.view">
+        <field name="name">telegram.bot.user.form</field>
+        <field name="model">telegram.bot.user</field>
+        <field name="arch" type="xml">
+            <form string="Telegram User">
+                <header>
+                    <button name="send_message_to_user" type="object" 
+                            string="Send Message" class="btn-primary"
+                            icon="fa-paper-plane"/>
+                    <button name="toggle_block" type="object" 
+                            string="Block/Unblock" class="btn-secondary"
+                            icon="fa-ban"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="telegram_user_id" invisible="1"/>
+                            <field name="first_name"/> <field name="last_name"/>
+                        </h1>
+                        <h2>
+                            <field name="username" invisible="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="User Information">
+                            <field name="telegram_user_id" string="Telegram ID"/>
+                            <field name="first_name"/>
+                            <field name="last_name"/>
+                            <field name="username"/>
+                            <field name="language_code"/>
+                        </group>
+                        <group string="Status">
+                            <field name="partner_id"/>
+                            <field name="chat_id"/>
+                            <field name="is_blocked"/>
+                            <field name="is_admin"/>
+                            <field name="last_interaction"/>
+                            <field name="total_messages"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Messages" name="messages">
+                            <field name="message_ids">
+                                <tree string="Messages" create="0" edit="0">
+                                    <field name="create_date" string="Date"/>
+                                    <field name="message_text" string="Message"/>
+                                    <field name="direction" string="Type"/>
+                                    <field name="state" string="Status"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Preferences" name="preferences">
+                            <group>
+                                <field name="notification_enabled"/>
+                                <field name="notification_order_update"/>
+                                <field name="notification_invoice"/>
+                                <field name="notification_promotion"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== TELEGRAM MESSAGES ==================== -->
+    
+    <!-- Tree View for Telegram Messages -->
+    <record id="view_telegram_message_tree" model="ir.ui.view">
+        <field name="name">telegram.message.tree</field>
+        <field name="model">telegram.message</field>
+        <field name="arch" type="xml">
+            <tree string="Messages" decoration-success="state == 'delivered'" 
+                  decoration-danger="state == 'failed'"
+                  decoration-warning="state == 'pending'">
+                <field name="create_date" string="Date"/>
+                <field name="chat_id" string="Chat"/>
+                <field name="direction" string="Type" widget="badge"
+                       decoration-info="direction == 'incoming'"
+                       decoration-success="direction == 'outgoing'"/>
+                <field name="message_text" string="Message"/>
+                <field name="state" string="Status" widget="badge"
+                       decoration-success="state == 'delivered'"
+                       decoration-danger="state == 'failed'"
+                       decoration-warning="state == 'pending'"/>
+                <field name="bot_id" string="Bot"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View for Telegram Messages -->
+    <record id="view_telegram_message_form" model="ir.ui.view">
+        <field name="name">telegram.message.form</field>
+        <field name="model">telegram.message</field>
+        <field name="arch" type="xml">
+            <form string="Message Detail" create="0" edit="0">
+                <header>
+                    <button name="resend_message" type="object" 
+                            string="Resend" class="btn-primary"
+                            icon="fa-refresh"
+                            attrs="{'invisible': [('state', 'not in', ['failed'])]}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="bot_id"/>
+                            <field name="chat_id"/>
+                            <field name="direction"/>
+                            <field name="state"/>
+                            <field name="message_type"/>
+                        </group>
+                        <group>
+                            <field name="create_date"/>
+                            <field name="update_date" invisible="1"/>
+                            <field name="partner_id"/>
+                            <field name="user_id"/>
+                        </group>
+                    </group>
+                    <group string="Message Content">
+                        <field name="message_text" nolabel="1" 
+                               widget="html" height="200"/>
+                    </group>
+                    <group string="Response Data" attrs="{'invisible': [('response_data', '=', False)]}">
+                        <field name="response_data" nolabel="1" height="100"/>
+                    </group>
+                    <group string="Error" attrs="{'invisible': [('error_message', '=', False)]}">
+                        <field name="error_message" nolabel="1" 
+                               widget="html" class="text-danger"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== SEND MESSAGE WIZARD ==================== -->
+    
+    <!-- Wizard Form -->
+    <record id="view_telegram_send_message_wizard" model="ir.ui.view">
+        <field name="name">telegram.send.message.wizard.form</field>
+        <field name="model">telegram.send.message.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Send Telegram Message">
+                <group>
+                    <group string="Recipient">
+                        <field name="bot_id" string="Bot" required="1"/>
+                        <field name="recipient_type" required="1"/>
+                        <field name="chat_id" 
+                               attrs="{'invisible': [('recipient_type', '!=', 'specific')],
+                                      'required': [('recipient_type', '=', 'specific')]}"/>
+                        <field name="partner_ids" 
+                               attrs="{'invisible': [('recipient_type', 'not in', ['customer', 'segment'])],
+                                      'required': [('recipient_type', 'in', ['customer', 'segment'])]}"
+                               widget="many2many_tags"/>
+                        <field name="user_ids"
+                               attrs="{'invisible': [('recipient_type', '!=', 'users')],
+                                      'required': [('recipient_type', '=', 'users')]}"
+                               widget="many2many_tags"/>
+                    </group>
+                    <group string="Message">
+                        <field name="message_type" required="1"/>
+                        <field name="subject" string="Subject"/>
+                        <field name="message_text" 
+                               placeholder="Type your message here..."
+                               attrs="{'required': [('message_type', '=', 'text')]}"/>
+                        <field name="attachment_ids" 
+                               widget="many2many_binary"
+                               attrs="{'invisible': [('message_type', 'not in', ['image', 'document'])]}"/>
+                        <field name="parse_mode"/>
+                    </group>
+                </group>
+                <group string="Preview" attrs="{'invisible': [('message_text', '=', False)]}">
+                    <field name="preview_message" nolabel="1" widget="html" height="150"/>
+                </group>
+                <footer>
+                    <button name="action_send" type="object" 
+                            string="Send Message" class="btn-primary"
+                            icon="fa-paper-plane"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Send Message Action -->
+    <record id="action_telegram_send_message" model="ir.actions.act_window">
+        <field name="name">Send Telegram Message</field>
+        <field name="res_model">telegram.send.message.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_telegram_send_message_wizard"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ==================== SETTINGS VIEWS ==================== -->
+    
+    <!-- Configuration Settings Form -->
+    <record id="view_telegram_config_settings" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.telegram</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" 
+                     data-string="Telegram Integration" string="Telegram Integration" 
+                     data-key="telegram_integration"
+                     groups="base.group_system">
+                    <h2>Telegram Integration Settings</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="telegram_enabled"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="telegram_enabled" string="Enable Telegram Integration"/>
+                                <div class="text-muted">
+                                    Enable Telegram bot integration for notifications and customer support
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="telegram_auto_notify"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="telegram_auto_notify" string="Automatic Notifications"/>
+                                <div class="text-muted">
+                                    Send automatic notifications for orders, invoices, and shipments
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt16 o_settings_container" 
+                         attrs="{'invisible': [('telegram_enabled', '=', False)]}">
+                        <div class="col-12">
+                            <field name="telegram_default_bot_id" 
+                                   string="Default Bot"
+                                   widget="selection"/>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ==================== DASHBOARD VIEW ==================== -->
+    
+    <!-- Telegram Dashboard -->
+    <record id="view_telegram_dashboard" model="ir.ui.view">
+        <field name="name">telegram.dashboard</field>
+        <field name="model">telegram.bot</field>
+        <field name="arch" type="xml">
+            <dashboard string="Telegram Dashboard">
+                <group colspan="4">
+                    <group colspan="2">
+                        <div class="text-center">
+                            <h3>Total Users</h3>
+                            <h1>
+                                <field name="total_users" widget="integer"/>
+                            </h1>
+                        </div>
+                    </group>
+                    <group colspan="2">
+                        <div class="text-center">
+                            <h3>Total Messages</h3>
+                            <h1>
+                                <field name="total_messages" widget="integer"/>
+                            </h1>
+                        </div>
+                    </group>
+                </group>
+            </dashboard>
+        </field>
+    </record>
+
+    <!-- ==================== MENU ITEMS ==================== -->
+    
+    <!-- Main Menu -->
+    <menuitem id="menu_telegram_root"
+              name="Telegram"
+              sequence="50"
+              groups="base.group_user"
+              web_icon="telegram_integration,static/description/icon.png"/>
+
+    <!-- Bots Menu -->
+    <menuitem id="menu_telegram_bot"
+              name="Bots"
+              parent="menu_telegram_root"
+              sequence="10"
+              action="action_telegram_bot"/>
+
+    <!-- Users Menu -->
+    <menuitem id="menu_telegram_users"
+              name="Users"
+              parent="menu_telegram_root"
+              sequence="20"
+              action="action_telegram_users"/>
+
+    <!-- Messages Menu -->
+    <menuitem id="menu_telegram_messages"
+              name="Messages"
+              parent="menu_telegram_root"
+              sequence="30"
+              action="action_telegram_messages"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_telegram_configuration"
+              name="Configuration"
+              parent="menu_telegram_root"
+              sequence="90"
+              groups="base.group_system">
+        <menuitem id="menu_telegram_commands"
+                  name="Commands"
+                  sequence="10"
+                  action="action_telegram_commands"/>
+        <menuitem id="menu_telegram_templates"
+                  name="Message Templates"
+                  sequence="20"
+                  action="action_telegram_templates"/>
+    </menuitem>
+
+</odoo>

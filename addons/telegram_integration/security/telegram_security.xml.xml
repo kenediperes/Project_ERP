@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Security Groups -->
+    
+    <!-- Telegram Admin Group -->
+    <record id="group_telegram_admin" model="res.groups">
+        <field name="name">Telegram Administrator</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Administrator with full access to Telegram integration settings.</field>
+    </record>
+    
+    <!-- Telegram Operator Group -->
+    <record id="group_telegram_operator" model="res.groups">
+        <field name="name">Telegram Operator</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">User who can send messages and manage conversations.</field>
+    </record>
+    
+    <!-- Record Rules -->
+    
+    <!-- Bot: Only allow access to own company's bots -->
+    <record id="rule_telegram_bot_company" model="ir.rule">
+        <field name="name">Telegram Bot: Company Rule</field>
+        <field name="model_id" ref="model_telegram_bot"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    
+    <!-- Message: Only see messages from own company -->
+    <record id="rule_telegram_message_company" model="ir.rule">
+        <field name="name">Telegram Message: Company Rule</field>
+        <field name="model_id" ref="model_telegram_message"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('bot_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    
+    <!-- User: Only see users from own company -->
+    <record id="rule_telegram_bot_user_company" model="ir.rule">
+        <field name="name">Telegram Bot User: Company Rule</field>
+        <field name="model_id" ref="model_telegram_bot_user"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('bot_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    
+    <!-- Command: Only admin can modify -->
+    <record id="rule_telegram_command_modify" model="ir.rule">
+        <field name="name">Telegram Command: Modify Rule</field>
+        <field name="model_id" ref="model_telegram_command"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_telegram_admin'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    
+    <!-- Command: Regular users can only read -->
+    <record id="rule_telegram_command_read" model="ir.rule">
+        <field name="name">Telegram Command: Read Rule</field>
+        <field name="model_id" ref="model_telegram_command"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_telegram_operator'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

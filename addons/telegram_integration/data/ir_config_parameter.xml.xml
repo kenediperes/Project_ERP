@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- System Parameters for Telegram Integration -->
+    
+    <record id="param_auto_registration" model="ir.config_parameter">
+        <field name="key">telegram.auto_registration</field>
+        <field name="value">False</field>
+    </record>
+    
+    <record id="param_max_message_length" model="ir.config_parameter">
+        <field name="key">telegram.max_message_length</field>
+        <field name="value">4096</field>
+    </record>
+    
+    <record id="param_max_file_size" model="ir.config_parameter">
+        <field name="key">telegram.max_file_size</field>
+        <field name="value">52428800</field>
+    </record>
+    
+    <record id="param_retry_attempts" model="ir.config_parameter">
+        <field name="key">telegram.retry_attempts</field>
+        <field name="value">3</field>
+    </record>
+    
+    <record id="param_retry_delay" model="ir.config_parameter">
+        <field name="key">telegram.retry_delay</field>
+        <field name="value">5</field>
+    </record>
+    
+    <record id="param_webhook_max_connections" model="ir.config_parameter">
+        <field name="key">telegram.webhook_max_connections</field>
+        <field name="value">40</field>
+    </record>
+    
+    <record id="param_enable_logging" model="ir.config_parameter">
+        <field name="key">telegram.enable_logging</field>
+        <field name="value">True</field>
+    </record>
+    
+    <record id="param_log_level" model="ir.config_parameter">
+        <field name="key">telegram.log_level</field>
+        <field name="value">INFO</field>
+    </record>
+    
+    <record id="param_enable_cors" model="ir.config_parameter">
+        <field name="key">telegram.enable_cors</field>
+        <field name="value">True</field>
+    </record>
+    
+    <record id="param_allowed_origins" model="ir.config_parameter">
+        <field name="key">telegram.allowed_origins</field>
+        <field name="value">https://telegram.org,https://api.telegram.org</field>
+    </record>
+</odoo>

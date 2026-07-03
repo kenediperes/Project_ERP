@@ -1,0 +1,200 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+;; ==================== WHATSAPP CONFIGURATION ====================
+
+;; WhatsApp Account - Full access for System Admin
+access_whatsapp_account_admin,whatsapp.account.admin,model_whatsapp_account,base.group_system,1,1,1,1
+;; WhatsApp Account - Read only for regular users
+access_whatsapp_account_user,whatsapp.account.user,model_whatsapp_account,base.group_user,1,0,0,0
+;; WhatsApp Account - Read/Write for WhatsApp Admin
+access_whatsapp_account_manager,whatsapp.account.manager,model_whatsapp_account,group_whatsapp_admin,1,1,1,1
+
+;; WhatsApp Phone Number - Full access for System Admin
+access_whatsapp_phone_number_admin,whatsapp.phone.number.admin,model_whatsapp_phone_number,base.group_system,1,1,1,1
+;; WhatsApp Phone Number - Read/Write for WhatsApp Admin
+access_whatsapp_phone_number_manager,whatsapp.phone.number.manager,model_whatsapp_phone_number,group_whatsapp_admin,1,1,1,1
+;; WhatsApp Phone Number - Read only for regular users
+access_whatsapp_phone_number_user,whatsapp.phone.number.user,model_whatsapp_phone_number,base.group_user,1,0,0,0
+
+;; WhatsApp Template - Full access for System Admin
+access_whatsapp_template_admin,whatsapp.template.admin,model_whatsapp_template,base.group_system,1,1,1,1
+;; WhatsApp Template - Read/Write for WhatsApp Admin
+access_whatsapp_template_manager,whatsapp.template.manager,model_whatsapp_template,group_whatsapp_admin,1,1,1,1
+;; WhatsApp Template - Read only for regular users
+access_whatsapp_template_user,whatsapp.template.user,model_whatsapp_template,base.group_user,1,0,0,0
+
+;; WhatsApp Template Category
+access_whatsapp_template_category_admin,whatsapp.template.category.admin,model_whatsapp_template_category,base.group_system,1,1,1,1
+access_whatsapp_template_category_manager,whatsapp.template.category.manager,model_whatsapp_template_category,group_whatsapp_admin,1,1,1,1
+
+;; ==================== WHATSAPP MESSAGES ====================
+
+;; WhatsApp Message - Full access for System Admin
+access_whatsapp_message_admin,whatsapp.message.admin,model_whatsapp_message,base.group_system,1,1,1,1
+;; WhatsApp Message - Read/Write/Create for WhatsApp Operator
+access_whatsapp_message_operator,whatsapp.message.operator,model_whatsapp_message,group_whatsapp_operator,1,1,1,1
+;; WhatsApp Message - Read/Write/Create for WhatsApp Admin
+access_whatsapp_message_manager,whatsapp.message.manager,model_whatsapp_message,group_whatsapp_admin,1,1,1,1
+;; WhatsApp Message - Read only for regular users
+access_whatsapp_message_user,whatsapp.message.user,model_whatsapp_message,base.group_user,1,0,0,0
+
+;; WhatsApp Message Queue - System only
+access_whatsapp_queue_admin,whatsapp.queue.admin,model_whatsapp_queue,base.group_system,1,1,1,1
+access_whatsapp_queue_manager,whatsapp.queue.manager,model_whatsapp_queue,group_whatsapp_admin,1,1,1,1
+
+;; WhatsApp Message Log - Read for all, Write for Admin
+access_whatsapp_message_log_admin,whatsapp.message.log.admin,model_whatsapp_message_log,base.group_system,1,1,1,1
+access_whatsapp_message_log_manager,whatsapp.message.log.manager,model_whatsapp_message_log,group_whatsapp_admin,1,1,1,1
+access_whatsapp_message_log_user,whatsapp.message.log.user,model_whatsapp_message_log,base.group_user,1,0,0,0
+
+;; ==================== WHATSAPP CONTACTS ====================
+
+;; WhatsApp Contact - Full access for System Admin
+access_whatsapp_contact_admin,whatsapp.contact.admin,model_whatsapp_contact,base.group_system,1,1,1,1
+;; WhatsApp Contact - Read/Write for WhatsApp Admin
+access_whatsapp_contact_manager,whatsapp.contact.manager,model_whatsapp_contact,group_whatsapp_admin,1,1,1,1
+;; WhatsApp Contact - Read/Write/Create for WhatsApp Operator
+access_whatsapp_contact_operator,whatsapp.contact.operator,model_whatsapp_contact,group_whatsapp_operator,1,1,1,0
+;; WhatsApp Contact - Read only for regular users
+access_whatsapp_contact_user,whatsapp.contact.user,model_whatsapp_contact,base.group_user,1,0,0,0
+
+;; WhatsApp Contact Group
+access_whatsapp_contact_group_admin,whatsapp.contact.group.admin,model_whatsapp_contact_group,base.group_system,1,1,1,1
+access_whatsapp_contact_group_manager,whatsapp.contact.group.manager,model_whatsapp_contact_group,group_whatsapp_admin,1,1,1,1
+access_whatsapp_contact_group_user,whatsapp.contact.group.user,model_whatsapp_contact_group,base.group_user,1,0,0,0
+
+;; ==================== WHATSAPP CONVERSATIONS ====================
+
+;; WhatsApp Conversation - Full access for System Admin
+access_whatsapp_conversation_admin,whatsapp.conversation.admin,model_whatsapp_conversation,base.group_system,1,1,1,1
+;; WhatsApp Conversation - Read/Write for WhatsApp Admin
+access_whatsapp_conversation_manager,whatsapp.conversation.manager,model_whatsapp_conversation,group_whatsapp_admin,1,1,1,1
+;; WhatsApp Conversation - Read/Write for WhatsApp Operator
+access_whatsapp_conversation_operator,whatsapp.conversation.operator,model_whatsapp_conversation,group_whatsapp_operator,1,1,1,1
+;; WhatsApp Conversation - Read only for regular users
+access_whatsapp_conversation_user,whatsapp.conversation.user,model_whatsapp_conversation,base.group_user,1,0,0,0
+
+;; WhatsApp Conversation Participant
+access_whatsapp_conversation_participant_admin,whatsapp.conversation.participant.admin,model_whatsapp_conversation_participant,base.group_system,1,1,1,1
+access_whatsapp_conversation_participant_manager,whatsapp.conversation.participant.manager,model_whatsapp_conversation_participant,group_whatsapp_admin,1,1,1,1
+access_whatsapp_conversation_participant_operator,whatsapp.conversation.participant.operator,model_whatsapp_conversation_participant,group_whatsapp_operator,1,1,1,1
+
+;; ==================== WHATSAPP NOTIFICATIONS ====================
+
+;; WhatsApp Notification Rule - Admin only
+access_whatsapp_notification_rule_admin,whatsapp.notification.rule.admin,model_whatsapp_notification_rule,base.group_system,1,1,1,1
+access_whatsapp_notification_rule_manager,whatsapp.notification.rule.manager,model_whatsapp_notification_rule,group_whatsapp_admin,1,1,1,1
+access_whatsapp_notification_rule_user,whatsapp.notification.rule.user,model_whatsapp_notification_rule,base.group_user,1,0,0,0
+
+;; WhatsApp Notification Log - Read for all, System for create
+access_whatsapp_notification_log_admin,whatsapp.notification.log.admin,model_whatsapp_notification_log,base.group_system,1,1,1,1
+access_whatsapp_notification_log_manager,whatsapp.notification.log.manager,model_whatsapp_notification_log,group_whatsapp_admin,1,1,0,0
+access_whatsapp_notification_log_user,whatsapp.notification.log.user,model_whatsapp_notification_log,base.group_user,1,0,0,0
+
+;; ==================== WHATSAPP SESSIONS ====================
+
+;; WhatsApp Session - System Admin only (sensitive data)
+access_whatsapp_session_admin,whatsapp.session.admin,model_whatsapp_session,base.group_system,1,1,1,1
+;; WhatsApp Session - Read only for WhatsApp Admin
+access_whatsapp_session_manager,whatsapp.session.manager,model_whatsapp_session,group_whatsapp_admin,1,0,0,0
+
+;; ==================== WHATSAPP MEDIA ====================
+
+;; WhatsApp Media - Full access for System Admin
+access_whatsapp_media_admin,whatsapp.media.admin,model_whatsapp_media,base.group_system,1,1,1,1
+;; WhatsApp Media - Read/Write for WhatsApp Admin
+access_whatsapp_media_manager,whatsapp.media.manager,model_whatsapp_media,group_whatsapp_admin,1,1,1,1
+;; WhatsApp Media - Read/Write/Create for WhatsApp Operator
+access_whatsapp_media_operator,whatsapp.media.operator,model_whatsapp_media,group_whatsapp_operator,1,1,1,0
+;; WhatsApp Media - Read only for regular users
+access_whatsapp_media_user,whatsapp.media.user,model_whatsapp_media,base.group_user,1,0,0,0
+
+;; ==================== WHATSAPP ANALYTICS ====================
+
+;; WhatsApp Analytics - Full access for System Admin
+access_whatsapp_analytics_admin,whatsapp.analytics.admin,model_whatsapp_analytics,base.group_system,1,1,1,1
+;; WhatsApp Analytics - Read only for WhatsApp Admin
+access_whatsapp_analytics_manager,whatsapp.analytics.manager,model_whatsapp_analytics,group_whatsapp_admin,1,0,0,0
+;; WhatsApp Analytics - Read only for regular users
+access_whatsapp_analytics_user,whatsapp.analytics.user,model_whatsapp_analytics,base.group_user,1,0,0,0
+
+;; ==================== WHATSAPP WEBHOOK ====================
+
+;; WhatsApp Webhook Log - System Admin and WhatsApp Admin
+access_whatsapp_webhook_log_admin,whatsapp.webhook.log.admin,model_whatsapp_webhook_log,base.group_system,1,1,1,1
+access_whatsapp_webhook_log_manager,whatsapp.webhook.log.manager,model_whatsapp_webhook_log,group_whatsapp_admin,1,0,0,0
+
+;; ==================== WHATSAPP INTEGRATION WITH ODOO MODELS ====================
+
+;; WhatsApp integration fields on res.partner
+;; No separate access needed, uses res.partner access rights
+;; But we need to ensure WhatsApp-specific fields are accessible
+
+;; WhatsApp integration with sale.order
+access_whatsapp_sale_order_admin,whatsapp.sale.order.admin,model_sale_order,base.group_system,1,1,1,1
+access_whatsapp_sale_order_user,whatsapp.sale.order.user,model_sale_order,base.group_user,1,0,0,0
+
+;; WhatsApp integration with account.move (invoices)
+access_whatsapp_account_move_admin,whatsapp.account.move.admin,model_account_move,base.group_system,1,1,1,1
+access_whatsapp_account_move_user,whatsapp.account.move.user,model_account_move,base.group_user,1,0,0,0
+
+;; ==================== WHATSAPP AUTOMATION ====================
+
+;; WhatsApp Automation Rule
+access_whatsapp_automation_admin,whatsapp.automation.admin,model_whatsapp_automation,base.group_system,1,1,1,1
+access_whatsapp_automation_manager,whatsapp.automation.manager,model_whatsapp_automation,group_whatsapp_admin,1,1,1,1
+access_whatsapp_automation_user,whatsapp.automation.user,model_whatsapp_automation,base.group_user,1,0,0,0
+
+;; WhatsApp Automation Log
+access_whatsapp_automation_log_admin,whatsapp.automation.log.admin,model_whatsapp_automation_log,base.group_system,1,1,1,1
+access_whatsapp_automation_log_manager,whatsapp.automation.log.manager,model_whatsapp_automation_log,group_whatsapp_admin,1,1,0,0
+access_whatsapp_automation_log_user,whatsapp.automation.log.user,model_whatsapp_automation_log,base.group_user,1,0,0,0
+
+;; ==================== WHATSAPP BROADCAST ====================
+
+;; WhatsApp Broadcast
+access_whatsapp_broadcast_admin,whatsapp.broadcast.admin,model_whatsapp_broadcast,base.group_system,1,1,1,1
+access_whatsapp_broadcast_manager,whatsapp.broadcast.manager,model_whatsapp_broadcast,group_whatsapp_admin,1,1,1,1
+access_whatsapp_broadcast_operator,whatsapp.broadcast.operator,model_whatsapp_broadcast,group_whatsapp_operator,1,1,0,0
+access_whatsapp_broadcast_user,whatsapp.broadcast.user,model_whatsapp_broadcast,base.group_user,1,0,0,0
+
+;; WhatsApp Broadcast Recipient
+access_whatsapp_broadcast_recipient_admin,whatsapp.broadcast.recipient.admin,model_whatsapp_broadcast_recipient,base.group_system,1,1,1,1
+access_whatsapp_broadcast_recipient_manager,whatsapp.broadcast.recipient.manager,model_whatsapp_broadcast_recipient,group_whatsapp_admin,1,1,1,1
+access_whatsapp_broadcast_recipient_operator,whatsapp.broadcast.recipient.operator,model_whatsapp_broadcast_recipient,group_whatsapp_operator,1,0,0,0
+
+;; ==================== WHATSAPP CHATBOT ====================
+
+;; WhatsApp Chatbot Rule
+access_whatsapp_chatbot_rule_admin,whatsapp.chatbot.rule.admin,model_whatsapp_chatbot_rule,base.group_system,1,1,1,1
+access_whatsapp_chatbot_rule_manager,whatsapp.chatbot.rule.manager,model_whatsapp_chatbot_rule,group_whatsapp_admin,1,1,1,1
+access_whatsapp_chatbot_rule_user,whatsapp.chatbot.rule.user,model_whatsapp_chatbot_rule,base.group_user,1,0,0,0
+
+;; WhatsApp Chatbot Conversation
+access_whatsapp_chatbot_conversation_admin,whatsapp.chatbot.conversation.admin,model_whatsapp_chatbot_conversation,base.group_system,1,1,1,1
+access_whatsapp_chatbot_conversation_manager,whatsapp.chatbot.conversation.manager,model_whatsapp_chatbot_conversation,group_whatsapp_admin,1,1,1,1
+access_whatsapp_chatbot_conversation_operator,whatsapp.chatbot.conversation.operator,model_whatsapp_chatbot_conversation,group_whatsapp_operator,1,1,1,0
+access_whatsapp_chatbot_conversation_user,whatsapp.chatbot.conversation.user,model_whatsapp_chatbot_conversation,base.group_user,1,0,0,0
+
+;; ==================== WHATSAPP SETTINGS ====================
+
+;; WhatsApp Settings - System Admin only
+access_whatsapp_settings_admin,whatsapp.settings.admin,model_whatsapp_settings,base.group_system,1,1,1,1
+;; WhatsApp Settings - Read for WhatsApp Admin
+access_whatsapp_settings_manager,whatsapp.settings.manager,model_whatsapp_settings,group_whatsapp_admin,1,0,0,0
+
+;; ==================== PORTAL ACCESS ====================
+
+;; Portal users can view their own WhatsApp messages
+access_whatsapp_message_portal,whatsapp.message.portal,model_whatsapp_message,base.group_portal,1,0,0,0
+;; Portal users can view their own WhatsApp conversations
+access_whatsapp_conversation_portal,whatsapp.conversation.portal,model_whatsapp_conversation,base.group_portal,1,0,0,0
+;; Portal users can view their WhatsApp contact info
+access_whatsapp_contact_portal,whatsapp.contact.portal,model_whatsapp_contact,base.group_portal,1,0,0,0
+
+;; ==================== PUBLIC ACCESS ====================
+
+;; Public users (for webhook endpoints)
+access_whatsapp_webhook_public,whatsapp.webhook.public,model_whatsapp_webhook_log,base.group_public,1,0,1,0
+;; Public access for WhatsApp message (limited)
+access_whatsapp_message_public,whatsapp.message.public,model_whatsapp_message,base.group_public,0,0,1,0

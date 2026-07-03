@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Cron Jobs for Telegram Integration -->
+    
+    <!-- Webhook Health Check - Every 30 minutes -->
+    <record id="cron_webhook_health_check" model="ir.cron">
+        <field name="name">Telegram: Webhook Health Check</field>
+        <field name="model_id" ref="model_telegram_bot"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_check_webhooks()</field>
+        <field name="interval_number">30</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+    
+    <!-- Clean Old Messages - Every day at 2 AM -->
+    <record id="cron_clean_old_messages" model="ir.cron">
+        <field name="name">Telegram: Clean Old Messages (90 days)</field>
+        <field name="model_id" ref="model_telegram_message"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_clean_old_messages()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="nextcall" eval="(datetime.now() + timedelta(days=1)).replace(hour=2, minute=0, second=0)"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+    
+    <!-- Update Statistics - Every hour -->
+    <record id="cron_update_statistics" model="ir.cron">
+        <field name="name">Telegram: Update Bot Statistics</field>
+        <field name="model_id" ref="model_telegram_bot"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_update_statistics()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+    
+    <!-- Process Message Queue - Every 5 minutes -->
+    <record id="cron_process_queue" model="ir.cron">
+        <field name="name">Telegram: Process Message Queue</field>
+        <field name="model_id" ref="model_telegram_queue"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_process_queue()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+    
+    <!-- Send Payment Reminders - Every day at 8 AM -->
+    <record id="cron_payment_reminders" model="ir.cron">
+        <field name="name">Telegram: Send Payment Reminders</field>
+        <field name="model_id" ref="model_telegram_bot"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_send_payment_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="nextcall" eval="(datetime.now() + timedelta(days=1)).replace(hour=8, minute=0, second=0)"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+</odoo>

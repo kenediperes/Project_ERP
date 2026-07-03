@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ==================== SECURITY GROUPS ==================== -->
+    
+    <!-- WhatsApp Administrator Group -->
+    <record id="group_whatsapp_admin" model="res.groups">
+        <field name="name">WhatsApp Administrator</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[
+            (4, ref('group_whatsapp_operator')),
+            (4, ref('base.group_user'))
+        ]"/>
+        <field name="users" eval="[
+            (4, ref('base.user_admin'))
+        ]"/>
+        <field name="comment">
+            WhatsApp Administrator with full access to:
+            - Configure WhatsApp Business API settings
+            - Manage message templates
+            - Set up automation rules
+            - View all conversations and messages
+            - Access analytics and reports
+            - Manage user permissions
+        </field>
+    </record>
+    
+    <!-- WhatsApp Operator Group -->
+    <record id="group_whatsapp_operator" model="res.groups">
+        <field name="name">WhatsApp Operator</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[
+            (4, ref('base.group_user'))
+        ]"/>
+        <field name="comment">
+            WhatsApp Operator can:
+            - Send and receive WhatsApp messages
+            - Manage conversations
+            - View contact information
+            - Use message templates
+            - Create and manage broadcasts
+        </field>
+    </record>
+    
+    <!-- WhatsApp Viewer Group -->
+    <record id="group_whatsapp_viewer" model="res.groups">
+        <field name="name">WhatsApp Viewer</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[
+            (4, ref('base.group_user'))
+        ]"/>
+        <field name="comment">
+            WhatsApp Viewer can:
+            - View messages and conversations
+            - Access read-only analytics
+            - View contact information
+        </field>
+    </record>
+    
+    <!-- WhatsApp Template Manager Group -->
+    <record id="group_whatsapp_template_manager" model="res.groups">
+        <field name="name">WhatsApp Template Manager</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[
+            (4, ref('group_whatsapp_admin'))
+        ]"/>
+        <field name="comment">
+            Manage WhatsApp message templates:
+            - Create and edit templates
+            - Submit templates for approval
+            - Manage template categories
+            - Test templates
+        </field>
+    </record>
+
+    <!-- ==================== RECORD RULES ==================== -->
+    
+    <!-- WhatsApp Account: Multi-company rule -->
+    <record id="rule_whatsapp_account_company" model="ir.rule">
+        <field name="name">WhatsApp Account: Multi-Company</field>
+        <field name="model_id" ref="model_whatsapp_account"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            [('company_id', 'in', company_ids)]
+        </field>
+        <field name="groups" eval="[
+            (4, ref('base.group_user'))
+        ]"/>
+    </record>
+    
+    <!-- WhatsApp Message: Company rule -->
+    <record id="rule_whatsapp_message_company" model="ir.rule">
+        <field name="name">WhatsApp Message: Multi-Company</field>
+        <field name="model_id" ref="model_whatsapp_message"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            [('account_id.company_id', 'in', company_ids)]
+        </field>
+        <field name="groups" eval="[
+            (4, ref('base.group_user'))
+        ]"/>
+    </record>
+    
+    <!-- WhatsApp Message: Portal user can only see own messages -->
+    <record id="rule_whatsapp_message_portal" model="ir.rule">
+        <field name="name">WhatsApp Message: Portal User Rule</field>
+        <field name="model_id" ref="model_whatsapp_message"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            [('partner_id', '=', user.partner_id.id)]
+        </field>
+        <field name="groups" eval="[
+            (4, ref('base.group_portal'))
+        ]"/>
+    </record>
+    
+    <!-- WhatsApp Conversation: Portal user rule -->
+    <record id="rule_whatsapp_conversation_portal" model="ir.rule">
+        <field name="name">WhatsApp Conversation: Portal User Rule</field>
+        <field name="model_id" ref="model_whatsapp_conversation"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            [('partner_id', '=', user.partner_id.id)]
+        </field>
+        <field name="groups" eval="[
+            (4, ref('base.group_portal'))
+        ]"/>
+    </record>
+    
+    <!-- WhatsApp Template: Only Template Managers can modify -->
+    <record id="rule_whatsapp_template_modify" model="ir.rule">
+        <field name="name">WhatsApp Template: Modify Rule</field>
+        <field name="model_id" ref="model_whatsapp_template"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            [(1, '=', 1)]
+        </field>
+        <field name="groups" eval="[
+            (4, ref('group_whatsapp_template_manager'))
+        ]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    
+    <!-- WhatsApp Template: Regular users can only read -->
+    <record id="rule_whatsapp_template_read" model="ir.rule">
+        <field name="name">WhatsApp Template: Read Rule</field>
+        <field name="model_id" ref="model_whatsapp_template"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            [('is_active', '=', True)]
+        </field>
+        <field name="groups" eval="[
+            (4, ref('base.group_user'))
+        ]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    
+    <!-- WhatsApp Broadcast: Operator can only see own broadcasts -->
+    <record id="rule_whatsapp_broadcast_operator" model="ir.rule">
+        <field name="name">WhatsApp Broadcast: Operator Rule</field>
+        <field name="model_id" ref="model_whatsapp_broadcast"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            [('create_uid', '=', user.id)]
+        </field>
+        <field name="groups" eval="[
+            (4, ref('group_whatsapp_operator'))
+        ]"/>
+    </record>
+    
+    <!-- WhatsApp Contact: View only assigned contacts -->
+    <record id="rule_whatsapp_contact_assigned" model="ir.rule">
+        <field name="name">WhatsApp Contact: Assigned Rule</field>
+        <field name="model_id" ref="model_whatsapp_contact"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|',
+                ('user_id', '=', user.id),
+                ('user_id', '=', False)
+            ]
+        </field>
+        <field name="groups" eval="[
+            (4, ref('group_whatsapp_operator'))
+        ]"/>
+    </record>
+    
+    <!-- WhatsApp Session: Only System Admin can access -->
+    <record id="rule_whatsapp_session_admin" model="ir.rule">
+        <field name="name">WhatsApp Session: Admin Only</field>
+        <field name="model_id" ref="model_whatsapp_session"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            [(1, '=', 1)]
+        </field>
+        <field name="groups" eval="[
+            (4, ref('base.group_system'))
+        ]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    
+    <!-- WhatsApp Settings: Multi-company -->
+    <record id="rule_whatsapp_settings_company" model="ir.rule">
+        <field name="name">WhatsApp Settings: Multi-Company</field>
+        <field name="model_id" ref="model_whatsapp_settings"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            [('company_id', 'in', company_ids)]
+        </field>
+        <field name="groups" eval="[
+            (4, ref('group_whatsapp_admin'))
+        ]"/>
+    </record>
+    
+    <!-- WhatsApp Analytics: Multi-company -->
+    <record id="rule_whatsapp_analytics_company" model="ir.rule">
+        <field name="name">WhatsApp Analytics: Multi-Company</field>
+        <field name="model_id" ref="model_whatsapp_analytics"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            [('company_id', 'in', company_ids)]
+        </field>
+        <field name="groups" eval="[
+            (4, ref('base.group_user'))
+        ]"/>
+    </record>
+
+    <!-- ==================== FIELD LEVEL SECURITY ==================== -->
+    
+    <!-- Sensitive fields only visible to WhatsApp Admin -->
+    <record id="field_whatsapp_account_token" model="ir.model.fields">
+        <field name="name">api_token</field>
+        <field name="model_id" ref="model_whatsapp_account"/>
+        <field name="groups" eval="[
+            (4, ref('group_whatsapp_admin'))
+        ]"/>
+    </record>
+    
+    <record id="field_whatsapp_account_phone_number_id" model="ir.model.fields">
+        <field name="name">phone_number_id</field>
+        <field name="model_id" ref="model_whatsapp_account"/>
+        <field name="groups" eval="[
+            (4, ref('group_whatsapp_admin'))
+        ]"/>
+    </record>
+    
+    <!-- Message content visible to all internal users -->
+    <record id="field_whatsapp_message_body" model="ir.model.fields">
+        <field name="name">message_body</field>
+        <field name="model_id" ref="model_whatsapp_message"/>
+        <field name="groups" eval="[
+            (4, ref('base.group_user'))
+        ]"/>
+    </record>
+
+    <!-- ==================== MENU ACCESS RIGHTS ==================== -->
+    
+    <!-- WhatsApp Main Menu - Visible to all internal users -->
+    <record id="menu_whatsapp_root_access" model="ir.ui.menu">
+        <field name="name">WhatsApp</field>
+        <field name="groups_id" eval="[
+            (6, 0, [
+                ref('base.group_user'),
+                ref('group_whatsapp_admin'),
+                ref('group_whatsapp_operator'),
+                ref('group_whatsapp_viewer')
+            ])
+        ]"/>
+    </record>
+    
+    <!-- WhatsApp Configuration Menu - Admin only -->
+    <record id="menu_whatsapp_config_access" model="ir.ui.menu">
+        <field name="name">Configuration</field>
+        <field name="parent_id" ref="menu_whatsapp_root"/>
+        <field name="groups_id" eval="[
+            (6, 0, [
+                ref('group_whatsapp_admin')
+            ])
+        ]"/>
+    </record>
+    
+    <!-- WhatsApp Settings Menu - Admin only -->
+    <record id="menu_whatsapp_settings_access" model="ir.ui.menu">
+        <field name="name">Settings</field>
+        <field name="parent_id" ref="menu_whatsapp_config"/>
+        <field name="groups_id" eval="[
+            (6, 0, [
+                ref('base.group_system'),
+                ref('group_whatsapp_admin')
+            ])
+        ]"/>
+    </record>
+    
+    <!-- WhatsApp Analytics Menu - Admin and Viewers -->
+    <record id="menu_whatsapp_analytics_access" model="ir.ui.menu">
+        <field name="name">Analytics</field>
+        <field name="parent_id" ref="menu_whatsapp_root"/>
+        <field name="groups_id" eval="[
+            (6, 0, [
+                ref('group_whatsapp_admin'),
+                ref('group_whatsapp_viewer')
+            ])
+        ]"/>
+    </record>
+</odoo>

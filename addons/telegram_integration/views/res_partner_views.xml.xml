@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Partner Form -->
+    <record id="view_partner_form_inherit_telegram" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.telegram</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']" position="after">
+                <page string="Telegram" name="telegram">
+                    <group>
+                        <group string="Telegram Information">
+                            <field name="telegram_user_id" string="Telegram User ID"/>
+                            <field name="telegram_username" string="Telegram Username"/>
+                            <field name="telegram_chat_id" string="Chat ID"/>
+                        </group>
+                        <group string="Notification Preferences">
+                            <field name="telegram_opt_out" string="Opt-out from Telegram"/>
+                            <field name="telegram_order_notification" 
+                                   string="Order Updates"
+                                   attrs="{'invisible': [('telegram_opt_out', '=', True)]}"/>
+                            <field name="telegram_invoice_notification" 
+                                   string="Invoice Notifications"
+                                   attrs="{'invisible': [('telegram_opt_out', '=', True)]}"/>
+                            <field name="telegram_promotion_notification" 
+                                   string="Promotional Messages"
+                                   attrs="{'invisible': [('telegram_opt_out', '=', True)]}"/>
+                        </group>
+                    </group>
+                    <group string="Recent Telegram Messages" colspan="2">
+                        <field name="telegram_message_ids" 
+                               context="{'default_partner_id': active_id}"
+                               nolabel="1">
+                            <tree create="0" edit="0">
+                                <field name="create_date" string="Date"/>
+                                <field name="message_text" string="Message"/>
+                                <field name="direction" string="Type"/>
+                                <field name="state" string="Status"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Partner Tree (Kanban) -->
+    <record id="view_partner_tree_inherit_telegram" model="ir.ui.view">
+        <field name="name">res.partner.tree.inherit.telegram</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='email']" position="after">
+                <field name="telegram_username" string="Telegram" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search View for Partner -->
+    <record id="view_partner_search_inherit_telegram" model="ir.ui.view">
+        <field name="name">res.partner.search.inherit.telegram</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="telegram_username" string="Telegram"/>
+            </xpath>
+            <xpath expr="//filter[@name='type_contact']" position="after">
+                <separator/>
+                <filter string="Has Telegram" name="has_telegram"
+                        domain="[('telegram_user_id', '!=', False)]"/>
+                <filter string="Telegram Opted-out" name="telegram_opt_out"
+                        domain="[('telegram_opt_out', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
