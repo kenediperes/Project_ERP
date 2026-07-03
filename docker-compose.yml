@@ -36,8 +36,8 @@ services:
       - "8069:8069"
     environment:
       HOST: db
-      USER: ${POSTGRES_USER}
-      PASSWORD: ${POSTGRES_PASSWORD}
+      USER: odoo_admin
+      PASSWORD: YourStrongPassword123
       REDIS_HOST: redis
     volumes:
       - odoo_data:/var/lib/odoo
