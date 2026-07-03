@@ -5,6 +5,12 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 import redis
 import odoorpc
+import os
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+logger.info(f"Telegram bot token loaded: {bool(TOKEN)}")
 
 # Configuration
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
